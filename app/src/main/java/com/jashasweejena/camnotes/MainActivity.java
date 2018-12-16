@@ -45,20 +45,12 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity{
 
-    static final int REQUEST_TAKE_PHOTO = 1;
-    static final int PIX_REQUEST_CODE = 2;
-    static final int MAX_SELECTION_COUNT = 5;
     static final int SCAN_REQUEST_CODE = 99;
     Context context = MainActivity.this;
-    final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
-    final String orderBy = MediaStore.Images.Media._ID;
-    ArrayList<String> f = new ArrayList<String>(); // list of file paths
+    ArrayList<String> f = new ArrayList<>(); // list of file paths
     File[] listOfFiles; //List of files in a path
-    String mCurrentPhotoPath;
     GridView imagegrid;
-    int count;
     private ImageAdapter imageAdapter;
-    private Button imgPickerButton;
     private String TAG = MainActivity.class.getSimpleName();
 
 
@@ -70,7 +62,7 @@ public class MainActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
 
         getFromSdcard();
-        imgPickerButton = findViewById(R.id.imgPickerBtn);
+        Button imgPickerButton = findViewById(R.id.imgPickerBtn);
         imagegrid = findViewById(R.id.PhoneImageGrid);
         imageAdapter = new ImageAdapter();
         imagegrid.setAdapter(imageAdapter);
@@ -129,27 +121,6 @@ public class MainActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
-        }
-    }
 
     public void getFromSdcard() {
         File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -228,8 +199,7 @@ public class MainActivity extends AppCompatActivity{
                 return null;
             }
         }
-        SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss");
-        String timeStamp = s.format(new Date());
+        String timeStamp = new SimpleDateFormat("ddMMyyyyhhmmss").format(new Date());
         // Create a media file name
         File mediaFile;
         String mImageName="MI_"+ timeStamp +".jpg";
@@ -239,10 +209,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
     void imagePicker() {
-
-//        Pix.start(MainActivity.this,                    //Activity or Fragment Instance
-//                PIX_REQUEST_CODE,                //Request code for activity results
-//                MAX_SELECTION_COUNT);    //Number of images to restict selection count
 
         Intent intent = new Intent(this, ScanActivity.class);
         intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE, ScanConstants.OPEN_CAMERA);
@@ -269,18 +235,13 @@ public class MainActivity extends AppCompatActivity{
                 document.add(img);
             }
             document.close();
-            File file = null;
-            try{
-
-                file = new File(dest);
-            }
-            catch (Exception e){
-                Log.d("devil " ,e.getMessage());
-            }
+            File file = new File(dest);
             Intent intent = new Intent(Intent.ACTION_VIEW);
             Toast.makeText(this, Uri.fromFile(new File(dest)).toString() , Toast.LENGTH_SHORT).show();
-            intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+            Uri URI = FileProvider.getUriForFile(context, "com.scanlibrary.provider", file);
+            intent.setDataAndType(URI, "application/pdf");
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(intent);
         } catch (Exception e) {
             Log.d("devil: ",e.getMessage());
