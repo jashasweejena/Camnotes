@@ -28,8 +28,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.fxn.pix.Pix;
-import com.fxn.utility.PermUtil;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -182,7 +180,6 @@ public class MainActivity extends AppCompatActivity{
                     String path = storeImage(bitmap);
                     f.add(path);
                     imageAdapter.notifyDataSetChanged();
-                    imagegrid.setAdapter(imageAdapter);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -231,11 +228,13 @@ public class MainActivity extends AppCompatActivity{
                 return null;
             }
         }
+        SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss");
+        String timeStamp = s.format(new Date());
         // Create a media file name
-        String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmm").format(new Date());
         File mediaFile;
         String mImageName="MI_"+ timeStamp +".jpg";
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
+        Log.d("devil",mediaFile.getAbsolutePath());
         return mediaFile;
     }
 
@@ -251,29 +250,13 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Pix.start(MainActivity.this, PIX_REQUEST_CODE, MAX_SELECTION_COUNT);
-                } else {
-                    Toast.makeText(MainActivity.this, "Approve permissions to open Pix ImagePicker", Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-    }
-
     void makePdf(ArrayList<String> listOfPaths) {
         try {
-            String directoryPath = android.os.Environment.getExternalStorageDirectory().toString();
+            String directoryPath = Environment.getExternalStorageDirectory().getAbsolutePath();
 
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             String imageFileName = "PDF_" + timeStamp + "_";
-
             String dest = directoryPath + "/" + imageFileName + ".pdf"; //  Change pdf's name.
-
             Image img = Image.getInstance(f.get(0));
             Document document = new Document(img);
             PdfWriter.getInstance(document, new FileOutputStream(dest));
@@ -286,6 +269,19 @@ public class MainActivity extends AppCompatActivity{
                 document.add(img);
             }
             document.close();
+            File file = null;
+            try{
+
+                file = new File(dest);
+            }
+            catch (Exception e){
+                Log.d("devil " ,e.getMessage());
+            }
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Toast.makeText(this, Uri.fromFile(new File(dest)).toString() , Toast.LENGTH_SHORT).show();
+            intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
         } catch (Exception e) {
             Log.d("devil: ",e.getMessage());
             e.printStackTrace();

@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">CamNotes</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_generatepdf">Generate PDF</string>
+    <string name="app_name">The Uploader</string>
+    <string name="text1">Teachers create notes for their students spending a lot of time and effort,
+        writing every important point on the paper with the best possible handwriting.
+        LectureNotes helps teachers get those notes online to students all over the world.</string>
+    <string name="text2">Click on Upload to share your notes through your camera app and share it through a PDF for the students.</string>
 </resources>
