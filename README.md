@@ -55,7 +55,7 @@ Basically we have only one activity handling everything. We plan on making the a
 *UploadActivity* is the class to be used in the future to push the scanned documents to the cloud.
 
 ## About
-We are a group of four people, Jashaswee Jena ([@jashasweejena](https://github.com/jashasweejena)), Subham Mohapatra([@sssubham90](https://github.com/sssubham90)), Manish Rath([@raikoz](https://github.com/raikoz)), Amrit Dash([@the_AoG_guy](https://github.com/the-AoG-guy)). This app is currently in early stages and, currently, just prototypes the idea. We plan on working on it actively in the near future.
+We are a group of four people, Jashaswee Jena ([@jashasweejena](https://github.com/jashasweejena)), Subham Mohapatra([@sssubham90](https://github.com/sssubham90)), Manish Rath([@raikoz](https://github.com/raikoz)), Amrit Dash([@the-AoG-guy](https://github.com/the-AoG-guy)). This app is currently in early stages and, currently, just prototypes the idea. We plan on working on it actively in the near future.
 
 
 
